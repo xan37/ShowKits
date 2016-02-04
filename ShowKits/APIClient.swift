@@ -36,7 +36,7 @@ class APIClient: NSObject {
             longitude:Double,
             latitude:Double,
             radius:Double,
-            completion: (success:[AnyObject], failure:NSError)->Void
+            completion: (success:[AnyObject]?, failure:NSError?)->Void
         ){
                 var params = [String:AnyObject]()
             
@@ -56,9 +56,34 @@ class APIClient: NSObject {
             
             Alamofire.request(.GET, APIClient.apiURL, parameters: params, encoding: .URL, headers: nil)
             .responseJSON { response -> Void in
-                print(response)
+                //print(response)
+                
+                if response.result.error != nil {
+                    completion(success: nil, failure: response.result.error!)
+                    return
+                }
+                
+                let results = self.parsePhotosFrom(response.result.value as! [String:AnyObject])
+                
+                completion(success: results, failure: nil)
             }
             
+    }
+    
+    func parsePhotosFrom(info:[String:AnyObject])->[Photo] {
+        guard let photos = info["photos"] as? [String:AnyObject],
+            let photo = photos["photo"] as? [ [String:AnyObject] ]
+            else {
+                return [Photo]()
+        }
+        
+        var parsedPhotos = [Photo]()
+        
+        for info in photo {
+            parsedPhotos.append(Photo(info: info))
+        }
+        
+        return parsedPhotos
     }
 }
 
