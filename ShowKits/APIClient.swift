@@ -36,7 +36,7 @@ class APIClient: NSObject {
             longitude:Double,
             latitude:Double,
             radius:Double,
-            completion: (success:[AnyObject]?, failure:NSError?)->Void
+            completion: (success:[Photo]?, failure:NSError?)->Void
         ){
                 var params = [String:AnyObject]()
             

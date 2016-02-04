@@ -15,6 +15,7 @@ class CatsViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     var locatioManager = CLLocationManager()
     var apiClient = APIClient()
+    var photos:[Photo]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,8 +37,19 @@ class CatsViewController: UIViewController {
             latitude: mapView.centerCoordinate.latitude,
             radius: radius1) { (success, failure) -> Void in
             
-                print(success)
+               self.photos = success
+               self.UpdateMapView()
+               // print(success)
         }
+    }
+    
+    func UpdateMapView(){
+        self.mapView.removeAnnotations(self.mapView.annotations)
+        
+        if self.photos != nil {
+            self.mapView.addAnnotations(self.photos!)
+        }
+        
     }
 }
 
